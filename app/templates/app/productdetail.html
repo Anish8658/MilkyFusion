@@ -1,0 +1,285 @@
+<!-- ec\app\templates\app\productdetail.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}{{product.title}} - Manguli Dairy{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5z">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'category' product.category %}" class="text-decoration-none">{{product.get_category_display}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{product.title}}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Product Image -->
+        <div class="col-lg-6" data-aos="fade-right">
+            <div class="product-image-wrapper">
+                <div class="main-image">
+                    <img src="{{product.product_image.url}}" class="img-fluid rounded-3" alt="{{product.title}}">
+                </div>
+                <div class="product-badge">
+                    {% if product.discount_price < product.selling_price %}
+                    <span class="badge bg-danger">Save ₹{{save_price}}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-6 mb-5" data-aos="fade-left">
+            <h1 class="display-6 fw-bold mb-3">{{product.title}}</h1>
+            
+            <!-- Ratings -->
+            <div class="d-flex align-items-center mb-3">
+                <div class="text-warning me-2">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="text-muted">(4.5 | 120 reviews)</span>
+            </div>
+
+            <!-- Price -->
+            <div class="price-section mb-4">
+                <h2 class="text-success fw-bold">₹{{product.discount_price}}</h2>
+                {% if product.selling_price > product.discount_price %}
+                <p class="text-muted">
+                    <span class="text-decoration-line-through">₹{{product.selling_price}}</span>
+                    <span class="badge bg-success ms-2">{{save_percentage}}% OFF</span>
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Key Features -->
+            <div class="key-features mb-4">
+                <h5 class="fw-bold mb-3">Key Features</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>100% Pure & Natural</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>No Preservatives Added</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Farm Fresh</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Hygienic Packaging</li>
+                </ul>
+            </div>
+
+            <!-- Description -->
+            <div class="description mb-4">
+                <h5 class="fw-bold mb-3">Description</h5>
+                <p class="text-muted">{{product.description}}</p>
+            </div>
+
+            <!-- Composition -->
+            {% if product.composition %}
+            <div class="composition mb-4">
+                <h5 class="fw-bold mb-3">Composition</h5>
+                <p class="text-muted">{{product.composition}}</p>
+            </div>
+            {% endif %}
+
+            <!-- Usage -->
+            {% if product.prodapp %}
+            <div class="usage mb-4">
+                <h5 class="fw-bold mb-3">How to Use</h5>
+                <p class="text-muted">{{product.prodapp}}</p>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="action-buttons mt-5">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <form action="/add-to-cart" method="get" class="d-inline">
+                            <input type="hidden" name="prod_id" value="{{product.id}}">
+                            <button type="submit" class="btn btn-outline-success btn-lg w-100">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'showcart' %}" class="btn btn-warning btn-lg w-100">
+                            <i class="fas fa-bolt me-2"></i>Buy Now
+                        </a>
+                    </div>
+                    <div class="col-12">
+                        {% if wishlist %}
+                        <a pid="{{product.id}}" class="minus-wishlist btn btn-outline-danger w-100">
+                            <i class="fas fa-heart me-2"></i>Remove from Wishlist
+                        </a>
+                        {% else %}
+                        <a pid="{{product.id}}" class="plus-wishlist btn btn-outline-primary w-100">
+                            <i class="far fa-heart me-2"></i>Add to Wishlist
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Info -->
+            <div class="delivery-info mt-5 p-4 bg-light rounded-3">
+                <h5 class="fw-bold mb-3">Delivery Information</h5>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-truck text-success fs-4 me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Delivery</small>
+                                <span class="fw-bold">Free</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock text-success fs-4 me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Estimate</small>
+                                <span class="fw-bold">2-3 Days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-undo-alt text-success fs-4 me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Returns</small>
+                                <span class="fw-bold">7 Days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt text-success fs-4 me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Secure</small>
+                                <span class="fw-bold">Payment</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <section class="related-products mt-5 pt-5">
+        <h3 class="fw-bold mb-4">You May Also Like</h3>
+        <div class="row g-4">
+            {% for related in related_products %}
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="related-product-card">
+                    <a href="{% url 'product-detail' related.id %}" class="text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-img-wrapper">
+                                <img src="{{related.product_image.url}}" class="card-img-top" alt="{{related.title}}">
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title fw-bold">{{related.title|truncatechars:30}}</h6>
+                                <p class="text-success fw-bold mb-0">₹{{related.discount_price}}</p>
+                                <small class="text-muted text-decoration-line-through">₹{{related.selling_price}}</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<style>
+    .product-image-wrapper {
+        position: relative;
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .product-image-wrapper .main-image {
+        position: relative;
+        padding-top: 100%;
+        overflow: hidden;
+    }
+    
+    .product-image-wrapper .main-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+    }
+    
+    .product-image-wrapper:hover .main-image img {
+        transform: scale(1.05);
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 2;
+    }
+    
+    .product-badge .badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+    }
+    
+    .related-product-card .card-img-wrapper {
+        padding-top: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .related-product-card .card-img-wrapper img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 1rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .related-product-card:hover .card-img-wrapper img {
+        transform: scale(1.1);
+    }
+    
+    .related-product-card .card {
+        transition: all 0.3s ease;
+    }
+    
+    .related-product-card .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+    }
+    
+    .btn-outline-success, .btn-outline-primary, .btn-outline-danger {
+        border-width: 2px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-success:hover,
+    .btn-outline-primary:hover,
+    .btn-outline-danger:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-warning {
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-warning:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(253, 184, 19, 0.3);
+    }
+</style>
+{% endblock main-content %}

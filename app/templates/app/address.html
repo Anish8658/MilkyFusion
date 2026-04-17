@@ -1,0 +1,323 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}My Addresses - Milky Fusion{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-lg-3 mb-4">
+      <div class="account-sidebar bg-white rounded-3 shadow-sm p-4">
+        <div class="user-info text-center mb-4">
+          <div class="user-avatar mb-3">
+            <i class="fas fa-user-circle fa-4x text-primary"></i>
+          </div>
+          <h6 class="fw-bold mb-1">
+            {{request.user.get_full_name|default:request.user.username}}
+          </h6>
+          <p class="text-muted small mb-0">{{request.user.email}}</p>
+        </div>
+
+        <hr />
+
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="{% url 'profile' %}">
+              <i class="fas fa-id-card me-2"></i>Profile
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="{% url 'orders' %}">
+              <i class="fas fa-shopping-bag me-2"></i>My Orders
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link active" href="{% url 'address' %}">
+              <i class="fas fa-map-marker-alt me-2"></i>Addresses
+              <span class="badge bg-primary rounded-pill ms-auto address-count">{{ addresses|length }}</span>
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="{% url 'passwordchange' %}">
+              <i class="fas fa-key me-2"></i>Change Password
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-danger" href="{% url 'logout' %}">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Addresses Section -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">
+          <i class="fas fa-map-marker-alt text-primary me-2"></i>
+          My Saved Addresses
+        </h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+          <i class="fas fa-plus me-2"></i>Add New Address
+        </button>
+      </div>
+
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert alert-{{msg.tags}} alert-dismissible fade show" role="alert">
+            {{msg}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Address Container - Dynamic content will be loaded here by JavaScript -->
+      <div id="addressContainer">
+        {% if addresses %}
+          <div class="row g-4">
+            {% for ad in addresses %}
+              <div class="col-md-6">
+                <div class="address-card card border-0 shadow-sm h-100" id="address-{{ad.id}}" data-address-id="{{ad.id}}">
+                  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="badge bg-primary me-2">Address {{forloop.counter}}</span>
+                      {% if forloop.first %}
+                        <span class="badge bg-success default-badge">Default</span>
+                      {% endif %}
+                    </div>
+                    <div class="dropdown">
+                      <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <a class="dropdown-item" href="{% url 'update-address' pk=ad.id %}">
+                            <i class="fas fa-edit me-2 text-primary"></i>Edit
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item text-danger delete-address" href="#" data-address-id="{{ad.id}}" data-address-name="{{ad.name}}">
+                            <i class="fas fa-trash-alt me-2"></i>Delete
+                          </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                          <a class="dropdown-item set-default-address" href="#" data-address-id="{{ad.id}}">
+                            <i class="fas fa-check-circle me-2 text-success"></i>Set as Default
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="card-body">
+                    <div class="address-details">
+                      <h6 class="fw-bold mb-3">{{ad.name}}</h6>
+                      <div class="detail-item mb-2">
+                        <i class="fas fa-map-pin text-muted me-2" style="width: 20px"></i>
+                        <span>{{ad.locality}}, {{ad.city}}</span>
+                      </div>
+                      <div class="detail-item mb-2">
+                        <i class="fas fa-globe text-muted me-2" style="width: 20px"></i>
+                        <span>{{ad.state}}</span>
+                      </div>
+                      <div class="detail-item mb-2">
+                        <i class="fas fa-phone-alt text-muted me-2" style="width: 20px"></i>
+                        <span>{{ad.mobile}}</span>
+                      </div>
+                      <div class="detail-item">
+                        <i class="fas fa-envelope text-muted me-2" style="width: 20px"></i>
+                        <span>{{ad.email}}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-footer bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="form-check">
+                        <input class="form-check-input default-address-radio" type="radio" name="defaultAddress" id="default{{ad.id}}" {% if forloop.first %}checked{% endif %} data-address-id="{{ad.id}}">
+                        <label class="form-check-label small" for="default{{ad.id}}">Default Address</label>
+                      </div>
+                      <div class="action-buttons">
+                        <a href="{% url 'update-address' pk=ad.id %}" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger delete-address" data-address-id="{{ad.id}}" data-address-name="{{ad.name}}">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state text-center py-5" id="emptyAddressState">
+            <div class="empty-state-icon mb-4">
+              <i class="fas fa-map-marked-alt fa-5x text-muted"></i>
+            </div>
+            <h5 class="fw-bold mb-3">No Addresses Found</h5>
+            <p class="text-muted mb-4">You haven't added any delivery addresses yet.</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+              <i class="fas fa-plus me-2"></i>Add Your First Address
+            </button>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="fas fa-plus-circle me-2"></i>Add New Address
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form method="post" id="addAddressForm">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Full Name</label>
+              <input type="text" class="form-control" name="name" id="addressName" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Mobile Number</label>
+              <input type="tel" class="form-control" name="mobile" id="addressMobile" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Email</label>
+              <input type="email" class="form-control" name="email" id="addressEmail" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Locality</label>
+              <input type="text" class="form-control" name="locality" id="addressLocality" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">City</label>
+              <input type="text" class="form-control" name="city" id="addressCity" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">State</label>
+              <select class="form-select" name="state" id="addressState" required>
+                <option value="">Select State</option>
+                {% for state_code, state_name in form.fields.state.choices %}
+                  <option value="{{ state_code }}">{{ state_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="defaultAddress" name="is_default" />
+                <label class="form-check-label" for="defaultAddress">Set as default address</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveAddressBtn">
+          <i class="fas fa-save me-2"></i>Save Address
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <i class="fas fa-map-marked-alt fa-4x text-danger mb-3"></i>
+        <h5 class="fw-bold mb-3">Delete Address?</h5>
+        <p class="text-muted mb-0" id="deleteAddressName"></p>
+        <p class="text-muted">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+          <i class="fas fa-trash-alt me-2"></i>Delete Address
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .account-sidebar {
+    position: sticky;
+    top: 100px;
+  }
+  .account-sidebar .nav-link {
+    color: #2c3e50;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+  }
+  .account-sidebar .nav-link:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+  }
+  .account-sidebar .nav-link.active {
+    background: linear-gradient(135deg, #2b5a3a, #1e3c2a);
+    color: white;
+  }
+  .address-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  .address-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+  }
+  .detail-item {
+    display: flex;
+    align-items: flex-start;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .detail-item i {
+    margin-top: 3px;
+  }
+  .action-buttons .btn {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .empty-state {
+    background: white;
+    border-radius: 15px;
+    padding: 4rem 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  }
+  .address-card.deleting {
+    animation: slideOut 0.3s ease forwards;
+  }
+  @keyframes slideOut {
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+</style>
+{% endblock main-content %}

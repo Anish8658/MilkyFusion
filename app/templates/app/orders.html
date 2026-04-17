@@ -1,0 +1,412 @@
+<!-- ec\app\templates\app\orders.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}My Orders - Manguli Dairy{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'profile' %}" class="text-decoration-none">My Account</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="account-sidebar bg-white rounded-3 shadow-sm p-4">
+                <div class="user-info text-center mb-4">
+                    <div class="user-avatar mb-3">
+                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">{{request.user.get_full_name|default:request.user.username}}</h6>
+                    <p class="text-muted small mb-0">{{request.user.email}}</p>
+                </div>
+                
+                <hr>
+                
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="fas fa-id-card me-2"></i>Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link active" href="{% url 'orders' %}">
+                            <i class="fas fa-shopping-bag me-2"></i>My Orders
+                            <span class="badge bg-primary rounded-pill ms-auto">{{order_placed.count}}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="{% url 'address' %}">
+                            <i class="fas fa-map-marker-alt me-2"></i>Addresses
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="{% url 'showwishlist' %}">
+                            <i class="fas fa-heart me-2"></i>Wishlist
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="{% url 'passwordchange' %}">
+                            <i class="fas fa-key me-2"></i>Change Password
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div class="col-lg-9">
+            <div class="orders-container">
+                <!-- Filters -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0">My Orders</h4>
+                    
+                    <div class="order-filters">
+                        <select class="form-select form-select-sm" style="width: auto;">
+                            <option value="all">All Orders</option>
+                            <option value="pending">Pending</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="packed">Packed</option>
+                            <option value="shipped">On The Way</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% if order_placed %}
+                <div class="orders-list">
+                    {% for op in order_placed %}
+                    <div class="order-card card border-0 shadow-sm mb-4" data-aos="fade-up">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted d-block">Order ID</small>
+                                <strong>#MANG{{op.id|stringformat:"06d"}}</strong>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted d-block">Placed on</small>
+                                <strong>{{op.ordered_date|date:"d M Y, h:i A"}}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 col-4">
+                                    <div class="order-product-image">
+                                        <img src="{{op.product.product_image.url}}" class="img-fluid" alt="{{op.product.title}}">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 col-8">
+                                    <h6 class="fw-bold mb-2">{{op.product.title}}</h6>
+                                    <div class="order-details mb-2">
+                                        <span class="badge bg-light text-dark me-2">Quantity: {{op.quantity}}</span>
+                                        <span class="badge bg-light text-dark">Price: ₹{{op.total_cost|floatformat:2}}</span>
+                                    </div>
+                                    
+                                    <!-- Delivery Address -->
+                                    <div class="delivery-address small text-muted">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        {{op.customer.name}}, {{op.customer.locality}}, {{op.customer.city}}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4 mt-3 mt-md-0">
+                                    <!-- Order Status with Timeline -->
+                                    <div class="order-status">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-bold">Status:</span>
+                                            <span class="badge 
+                                                {% if op.status == 'Delivered' %}bg-success
+                                                {% elif op.status == 'Canceled' %}bg-danger
+                                                {% elif op.status == 'On The Way' %}bg-warning text-dark
+                                                {% elif op.status == 'Packed' %}bg-info text-white
+                                                {% elif op.status == 'Accepted' %}bg-primary
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{op.status}}
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Progress Bar -->
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            {% if op.status == 'Accepted' %}
+                                            <div class="progress-bar bg-info" style="width: 20%"></div>
+                                            {% elif op.status == 'Packed' %}
+                                            <div class="progress-bar bg-info" style="width: 40%"></div>
+                                            {% elif op.status == 'On The Way' %}
+                                            <div class="progress-bar bg-warning" style="width: 70%"></div>
+                                            {% elif op.status == 'Delivered' %}
+                                            <div class="progress-bar bg-success" style="width: 100%"></div>
+                                            {% elif op.status == 'Canceled' %}
+                                            <div class="progress-bar bg-danger" style="width: 100%"></div>
+                                            {% else %}
+                                            <div class="progress-bar bg-secondary" style="width: 5%"></div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="order-actions mt-3">
+                                            <button class="btn btn-sm btn-outline-primary me-2" onclick="trackOrder('{{op.id}}')">
+                                                <i class="fas fa-truck me-1"></i>Track
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="viewInvoice('{{op.id}}')">
+                                                <i class="fas fa-file-invoice me-1"></i>Invoice
+                                            </button>
+                                            {% if op.status == 'Pending' %}
+                                            <button class="btn btn-sm btn-outline-danger mt-2 mt-md-0" onclick="cancelOrder('{{op.id}}')">
+                                                <i class="fas fa-times me-1"></i>Cancel
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Timeline (Expanded View) -->
+                        <div class="card-footer bg-white border-0 py-3" style="display: none;" id="timeline-{{op.id}}">
+                            <div class="order-timeline">
+                                <div class="timeline-step completed">
+                                    <div class="timeline-icon"><i class="fas fa-check"></i></div>
+                                    <div class="timeline-content">
+                                        <strong>Order Placed</strong>
+                                        <small class="text-muted d-block">{{op.ordered_date|date:"d M Y, h:i A"}}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-step {% if op.status != 'Pending' %}completed{% endif %}">
+                                    <div class="timeline-icon"><i class="fas fa-check"></i></div>
+                                    <div class="timeline-content">
+                                        <strong>Order Confirmed</strong>
+                                        <small class="text-muted d-block">Estimated: {{op.ordered_date|date:"d M Y"}}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-step {% if op.status == 'Packed' or op.status == 'On The Way' or op.status == 'Delivered' %}completed{% endif %}">
+                                    <div class="timeline-icon"><i class="fas fa-box"></i></div>
+                                    <div class="timeline-content">
+                                        <strong>Packed</strong>
+                                        <small class="text-muted d-block">Ready for dispatch</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-step {% if op.status == 'On The Way' or op.status == 'Delivered' %}completed{% endif %}">
+                                    <div class="timeline-icon"><i class="fas fa-truck"></i></div>
+                                    <div class="timeline-content">
+                                        <strong>Out for Delivery</strong>
+                                        <small class="text-muted d-block">On the way</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-step {% if op.status == 'Delivered' %}completed{% endif %}">
+                                    <div class="timeline-icon"><i class="fas fa-home"></i></div>
+                                    <div class="timeline-content">
+                                        <strong>Delivered</strong>
+                                        <small class="text-muted d-block">Estimated: {{op.ordered_date|date:"d M Y"}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Toggle Timeline Button -->
+                        <button class="btn btn-link btn-sm w-100" onclick="toggleTimeline('{{op.id}}')">
+                            <i class="fas fa-chevron-down" id="chevron-{{op.id}}"></i> View Details
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- No Orders -->
+                <div class="empty-orders text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-shopping-bag fa-5x text-muted"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">No orders yet</h4>
+                    <p class="text-muted mb-4">Looks like you haven't placed any orders.</p>
+                    <a href="/" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .account-sidebar {
+        position: sticky;
+        top: 100px;
+    }
+    
+    .account-sidebar .nav-link {
+        color: var(--dark-text);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .account-sidebar .nav-link:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    .account-sidebar .nav-link.active {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e3c2a 100%);
+        color: white;
+    }
+    
+    .order-card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+    }
+    
+    .order-product-image {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    
+    .order-product-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    .progress {
+        border-radius: 10px;
+        background-color: #e9ecef;
+    }
+    
+    .order-actions .btn {
+        border-radius: 20px;
+        padding: 0.25rem 1rem;
+    }
+    
+    /* Timeline Styles */
+    .order-timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+    
+    .order-timeline::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background: #dee2e6;
+    }
+    
+    .timeline-step {
+        position: relative;
+        padding-left: 50px;
+        margin-bottom: 20px;
+    }
+    
+    .timeline-step:last-child {
+        margin-bottom: 0;
+    }
+    
+    .timeline-icon {
+        position: absolute;
+        left: 11px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+    
+    .timeline-step.completed .timeline-icon {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .timeline-content {
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 8px;
+    }
+    
+    .empty-orders {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    
+    @media (max-width: 768px) {
+        .order-product-image {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
+
+<script>
+    function toggleTimeline(orderId) {
+        var timeline = document.getElementById('timeline-' + orderId);
+        var chevron = document.getElementById('chevron-' + orderId);
+        
+        if (timeline.style.display === 'none') {
+            timeline.style.display = 'block';
+            chevron.classList.remove('fa-chevron-down');
+            chevron.classList.add('fa-chevron-up');
+        } else {
+            timeline.style.display = 'none';
+            chevron.classList.remove('fa-chevron-up');
+            chevron.classList.add('fa-chevron-down');
+        }
+    }
+    
+    function trackOrder(orderId) {
+        // Implement order tracking logic
+        alert('Tracking feature coming soon!');
+    }
+    
+    function viewInvoice(orderId) {
+        // Implement invoice generation
+        alert('Invoice generation coming soon!');
+    }
+    
+    function cancelOrder(orderId) {
+        if (confirm('Are you sure you want to cancel this order?')) {
+            // Implement order cancellation logic
+            alert('Order cancellation feature coming soon!');
+        }
+    }
+    
+    // Order filter
+    document.querySelector('.order-filters select').addEventListener('change', function() {
+        var filter = this.value;
+        // Implement filter logic
+        console.log('Filter by:', filter);
+    });
+</script>
+{% endblock main-content %}

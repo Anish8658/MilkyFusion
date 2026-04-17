@@ -1,0 +1,417 @@
+<!-- ec\app\templates\app\contact.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Contact Us - Milky Fusion{% endblock title %}
+
+{% block banner-slider %}
+<!-- Page Header -->
+<div class="page-header position-relative">
+    <img src="{% static 'app/images/banner/b8.png' %}" class="w-100 h-100" alt="Contact Manguli Dairy"
+        style="height: 400px; object-fit: cover;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+        style="background: rgba(0,0,0,0.5);">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bold" data-aos="fade-up">Get In Touch</h1>
+            <p class="lead" data-aos="fade-up" data-aos-delay="200">We'd love to hear from you</p>
+        </div>
+    </div>
+</div>
+{% endblock banner-slider %}
+
+{% block main-content %}
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+        </ol>
+    </nav>
+
+    <!-- Contact Info Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6" data-aos="fade-up">
+            <div class="contact-card bg-white p-4 rounded-4 shadow-sm text-center h-100">
+                <div class="icon-box mb-3">
+                    <i class="fas fa-map-marker-alt fa-3x text-primary"></i>
+                </div>
+                <h5 class="fw-bold mb-3">Visit Us</h5>
+                <p class="text-muted mb-0">Sakhigopal Village</p>
+                <p class="text-muted">Puri District, Odisha - 752014</p>
+                <a href="https://maps.google.com" target="_blank" class="btn btn-link text-primary p-0">
+                    Get Directions <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="contact-card bg-white p-4 rounded-4 shadow-sm text-center h-100">
+                <div class="icon-box mb-3">
+                    <i class="fas fa-phone-alt fa-3x text-primary"></i>
+                </div>
+                <h5 class="fw-bold mb-3">Call Us</h5>
+                <p class="text-muted mb-1">+91 12345 67890</p>
+                <p class="text-muted mb-0">+91 98765 43210</p>
+                <p class="small text-muted mt-2">24/7 Customer Support</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="contact-card bg-white p-4 rounded-4 shadow-sm text-center h-100">
+                <div class="icon-box mb-3">
+                    <i class="fas fa-envelope fa-3x text-primary"></i>
+                </div>
+                <h5 class="fw-bold mb-3">Email Us</h5>
+                <p class="text-muted mb-1">info@mangulidairy.com</p>
+                <p class="text-muted mb-0">support@mangulidairy.com</p>
+                <p class="small text-muted mt-2">We reply within 24 hours</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Contact Form -->
+        <div class="col-lg-7" data-aos="fade-right">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-4 rounded-4 rounded-bottom-0 border-0">
+                    <h4 class="fw-bold mb-1">Send us a Message</h4>
+                    <p class="text-muted mb-0">We'll get back to you as soon as possible</p>
+                </div>
+                <div class="card-body p-4">
+                    <form id="contactForm" method="post" action="{% url 'contact' %}">
+                        {% csrf_token %}
+
+                        <!-- Success Message (hidden by default) -->
+                        <div class="alert alert-success alert-dismissible fade show d-none" id="successMessage"
+                            role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Your message has been sent successfully! We'll contact you soon.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-user text-primary me-2"></i>Your Name
+                                </label>
+                                <input type="text" class="form-control form-control-lg" name="name"
+                                    placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-envelope text-primary me-2"></i>Email Address
+                                </label>
+                                <input type="email" class="form-control form-control-lg" name="email"
+                                    placeholder="john@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-phone text-primary me-2"></i>Phone Number
+                                </label>
+                                <input type="tel" class="form-control form-control-lg" name="phone"
+                                    placeholder="98765 43210" pattern="[0-9]{10}"
+                                    title="Please enter a valid 10-digit phone number">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-tag text-primary me-2"></i>Subject
+                                </label>
+                                <select class="form-select form-select-lg" name="subject" required>
+                                    <option value="" selected disabled>Select a subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="order">Order Related</option>
+                                    <option value="product">Product Information</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="partnership">Partnership</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-comment text-primary me-2"></i>Your Message
+                                </label>
+                                <textarea class="form-control form-control-lg" name="message" rows="5"
+                                    placeholder="Write your message here..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                    <label class="form-check-label small" for="agreeTerms">
+                                        I agree to the <a href="#" class="text-primary">Privacy Policy</a> and
+                                        <a href="#" class="text-primary">Terms of Service</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
+                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information & Map -->
+        <div class="col-lg-5" data-aos="fade-left">
+            <!-- Business Hours -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="fas fa-clock text-primary me-2"></i>
+                        Business Hours
+                    </h5>
+                    <div class="hours-list">
+                        <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                            <span class="text-muted">All Day</span>
+                            <span class="fw-semibold">8:00 AM - 8:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="fas fa-share-alt text-primary me-2"></i>
+                        Follow Us
+                    </h5>
+                    <div class="social-links d-flex gap-3">
+                        <a href="#" class="social-link facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link youtube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="ratio ratio-16x9">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3741.6851611922984!2d85.8849201!3d20.3132949!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a190a4b3fffffff%3A0x2dfa67798e4b5332!2sGlobal%20Institute%20Of%20Management!5e0!3m2!1sen!2sin!4v1776246821526!5m2!1sen!2sin"
+                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="card-body p-3 text-center">
+                    <a href="https://maps.google.com" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-directions me-2"></i>Get Directions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section mt-5">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Frequently Asked Questions</h2>
+            <p class="lead text-muted">Quick answers to common questions</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6" data-aos="fade-up">
+                <div class="faq-item bg-white p-4 rounded-4 shadow-sm">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-question-circle text-primary me-2"></i>
+                        How fresh are your products?
+                    </h5>
+                    <p class="text-muted mb-0">All our products are delivered within 24 hours of production. We maintain
+                        strict cold chain throughout delivery.</p>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="faq-item bg-white p-4 rounded-4 shadow-sm">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-question-circle text-primary me-2"></i>
+                        Do you deliver to my area?
+                    </h5>
+                    <p class="text-muted mb-0">We currently deliver across Puri district and nearby areas. Enter your
+                        pincode at checkout to check availability.</p>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="faq-item bg-white p-4 rounded-4 shadow-sm">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-question-circle text-primary me-2"></i>
+                        What is your return policy?
+                    </h5>
+                    <p class="text-muted mb-0">We accept returns within 24 hours of delivery if you're not satisfied
+                        with the quality. Contact our support team.</p>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="faq-item bg-white p-4 rounded-4 shadow-sm">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-question-circle text-primary me-2"></i>
+                        How can I become a partner?
+                    </h5>
+                    <p class="text-muted mb-0">We're always looking for retail partners. Fill the contact form with
+                        "Partnership" as subject, and we'll get back to you.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contact-card {
+        transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .icon-box {
+        transition: transform 0.3s ease;
+    }
+
+    .contact-card:hover .icon-box {
+        transform: scale(1.1);
+    }
+
+    .social-link {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .social-link.facebook {
+        background: #1877f2;
+    }
+
+    .social-link.twitter {
+        background: #1da1f2;
+    }
+
+    .social-link.instagram {
+        background: #e4405f;
+    }
+
+    .social-link.linkedin {
+        background: #0077b5;
+    }
+
+    .social-link.youtube {
+        background: #ff0000;
+    }
+
+    .social-link.whatsapp {
+        background: #25d366;
+    }
+
+    .social-link:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .faq-item {
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        transform: translateX(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(43, 90, 58, 0.1);
+    }
+
+    #submitBtn {
+        position: relative;
+        overflow: hidden;
+    }
+
+    #submitBtn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(43, 90, 58, 0.3);
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        // Form validation
+        $('#contactForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var name = $('input[name="name"]').val();
+            var email = $('input[name="email"]').val();
+            var phone = $('input[name="phone"]').val();
+            var subject = $('select[name="subject"]').val();
+            var message = $('textarea[name="message"]').val();
+            var agree = $('#agreeTerms').is(':checked');
+
+            // Basic validation
+            if (!name || !email || !subject || !message || !agree) {
+                showNotification('Please fill all required fields', 'error');
+                return false;
+            }
+
+            // Email validation
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return false;
+            }
+
+            // Phone validation (if provided)
+            if (phone && !/^\d{10}$/.test(phone)) {
+                showNotification('Please enter a valid 10-digit phone number', 'error');
+                return false;
+            }
+
+            // Show loading state
+            var $btn = $('#submitBtn');
+            var originalText = $btn.html();
+            $btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Sending...').prop('disabled', true);
+
+            // Simulate form submission (replace with actual AJAX)
+            setTimeout(function () {
+                $('#successMessage').removeClass('d-none');
+                $('#contactForm')[0].reset();
+                $btn.html(originalText).prop('disabled', false);
+
+                // Scroll to success message
+                $('html, body').animate({
+                    scrollTop: $('#successMessage').offset().top - 100
+                }, 500);
+            }, 1500);
+        });
+
+        // Phone number formatting
+        $('input[name="phone"]').on('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+        });
+    });
+</script>
+{% endblock main-content %}

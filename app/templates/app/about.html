@@ -1,0 +1,291 @@
+<!-- ec\app\templates\app\about.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}About Us - Milky Fusion{% endblock title %}
+
+{% block banner-slider %}
+<!-- Page Header with Background -->
+<div class="page-header position-relative">
+    <img src="{% static 'app/images/banner/b1.png' %}" class="w-100" alt="About Manguli Dairy" style="height: 600px; object-fit: cover;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+         style="background: rgba(0,0,0,0.5);">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bold" data-aos="fade-up">About Milky Fusion</h1>
+            <p class="lead" data-aos="fade-up" data-aos-delay="200">Freshness Delivered Since 2023</p>
+        </div>
+    </div>
+</div>
+{% endblock banner-slider %}
+
+{% block main-content %}
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">About Us</li>
+        </ol>
+    </nav>
+
+    <!-- Company Overview -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6" data-aos="fade-right">
+            <h2 class="display-6 fw-bold mb-4">Our Story</h2>
+            <p class="lead text-muted mb-4">A journey of passion for pure, fresh dairy products</p>
+            <p class="mb-4">MIlky Fusion is a public limited company having its registered and corporate office at Sakhigopal village in Puri district. Incorporated in 2018 with production commencing in 2023, we've grown to become one of the fastest-growing public listed companies in Puri city.</p>
+            <p class="mb-4">Our commitment to quality and freshness has made us a trusted name in every household we serve. We believe in delivering not just products, but the goodness of nature in its purest form.</p>
+            
+            <!-- Key Stats -->
+            <div class="row g-4 mt-4">
+                <div class="col-4">
+                    <div class="stat-box text-center">
+                        <h3 class="text-primary fw-bold mb-2">2018</h3>
+                        <p class="text-muted mb-0">Year Founded</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="stat-box text-center">
+                        <h3 class="text-primary fw-bold mb-2">5000+</h3>
+                        <p class="text-muted mb-0">Happy Customers</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="stat-box text-center">
+                        <h3 class="text-primary fw-bold mb-2">14+</h3>
+                        <p class="text-muted mb-0">Product Variants</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-left">
+            <div class="position-relative">
+                <img src="{% static 'app/images/farm.jpg' %}" class="img-fluid rounded-3 shadow" alt="Our Farm">
+                <div class="position-absolute bottom-0 end-0 bg-white p-3 rounded-3 shadow m-3">
+                    <i class="fas fa-quote-left fa-2x text-primary opacity-25"></i>
+                    <span class="mb-0 fst-italic">"Pure milk, pure love"</span>
+                    <i class="fas fa-quote-right fa-2x text-primary opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6" data-aos="zoom-in">
+            <div class="mission-card bg-light p-5 rounded-4 h-100">
+                <div class="icon-box mb-4">
+                    <i class="fas fa-bullseye fa-3x text-primary"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Our Mission</h3>
+                <p class="text-muted">To embrace the right technology to delight our customers, empowering the farmers community through our unique "Relationship Farming" Model. To anticipate, understand and respond to our customer's needs by creating high quality products and making them available throughout the world.</p>
+                <div class="mt-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Empower 10,000+ farmers by 2025</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Zero preservatives guarantee</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>24/7 fresh delivery</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="zoom-in" data-aos-delay="200">
+            <div class="vision-card bg-primary text-white p-5 rounded-4 h-100">
+                <div class="icon-box mb-4">
+                    <i class="fas fa-eye fa-3x"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Our Vision</h3>
+                <p>To become India's most trusted dairy brand by delivering pure, fresh, and nutritious products while creating sustainable value for farmers, customers, and communities.</p>
+                <div class="mt-5 pt-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <h4 class="fw-bold">2025</h4>
+                            <small>Pan-India presence</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="fw-bold">2030</h4>
+                            <small>Global expansion</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Values -->
+    <div class="values-section mb-5">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Our Core Values</h2>
+            <p class="lead text-muted">The principles that guide us every day</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="value-card text-center p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-leaf fa-3x text-success"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Purity</h5>
+                    <p class="text-muted">100% pure dairy products with no additives or preservatives</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="value-card text-center p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-hand-holding-heart fa-3x text-danger"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Quality</h5>
+                    <p class="text-muted">Rigorous quality checks at every stage of production</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="value-card text-center p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-users fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Community</h5>
+                    <p class="text-muted">Empowering local farmers and supporting rural economy</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="value-card text-center p-4 bg-white rounded-4 shadow-sm h-100">
+                    <div class="value-icon mb-3">
+                        <i class="fas fa-clock fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Freshness</h5>
+                    <p class="text-muted">Farm to home delivery within 24 hours</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="team-section mb-5">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Meet Our Leadership</h2>
+            <p class="lead text-muted">The passionate team behind your favorite dairy products</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6" data-aos="flip-left">
+                <div class="team-card bg-white rounded-4 shadow-sm overflow-hidden">
+                    <div class="team-img-wrapper">
+                        <img src="{% static 'app/images/team/founder.jpg' %}" class="w-100" alt="Founder" style="height: 300px; object-fit: cover;">
+                    </div>
+                    <div class="team-info p-4 text-center">
+                        <h5 class="fw-bold mb-1">Manguli Acharya</h5>
+                        <p class="text-primary mb-2">Founder & CEO</p>
+                        <p class="text-muted small">20+ years in dairy industry</p>
+                        <div class="social-links">
+                            <a href="#" class="text-secondary mx-2"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="text-secondary mx-2"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="flip-left" data-aos-delay="200">
+                <div class="team-card bg-white rounded-4 shadow-sm overflow-hidden">
+                    <div class="team-img-wrapper">
+                        <img src="{% static 'app/images/team/quality.jpg' %}" class="w-100" alt="Quality Head" style="height: 300px; object-fit: cover;">
+                    </div>
+                    <div class="team-info p-4 text-center">
+                        <h5 class="fw-bold mb-1">Dr. Sthitaprajna Panda</h5>
+                        <p class="text-primary mb-2">Quality Assurance Head</p>
+                        <p class="text-muted small">PhD in Food Technology</p>
+                        <div class="social-links">
+                            <a href="#" class="text-secondary mx-2"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="text-secondary mx-2"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="flip-left" data-aos-delay="200">
+                <div class="team-card bg-white rounded-4 shadow-sm overflow-hidden">
+                    <div class="team-img-wrapper">
+                        <img src="{% static 'app/images/team/creator.jpg' %}" class="w-100" alt="Quality Head" style="height: 300px; object-fit: cover;">
+                    </div>
+                    <div class="team-info p-4 text-center">
+                        <h5 class="fw-bold mb-1">Mr. Gaurishankar Acharya</h5>
+                        <p class="text-primary mb-2">Operations Manager</p>
+                        <p class="text-muted small">Supply chain expert</p>
+                        <div class="social-links">
+                            <a href="#" class="text-secondary mx-2"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="text-secondary mx-2"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certifications -->
+    <div class="certifications-section bg-light p-5 rounded-4 mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-3 text-center">
+                <h4 class="fw-bold">Our Certifications</h4>
+            </div>
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-4 col-md-2">
+                        <img src="{% static 'app/images/cert/fssai.png' %}" class="img-fluid grayscale-hover" alt="FSSAI">
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <img src="{% static 'app/images/cert/iso.png' %}" class="img-fluid grayscale-hover" alt="ISO">
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <img src="{% static 'app/images/cert/organic.png' %}" class="img-fluid grayscale-hover" alt="Organic">
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <img src="{% static 'app/images/cert/halal.png' %}" class="img-fluid grayscale-hover" alt="Halal">
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <img src="{% static 'app/images/cert/msme.png' %}" class="img-fluid grayscale-hover" alt="MSME">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-box {
+        transition: transform 0.3s ease;
+    }
+    .stat-box:hover {
+        transform: translateY(-5px);
+    }
+    .mission-card, .vision-card {
+        transition: all 0.3s ease;
+    }
+    .mission-card:hover, .vision-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .value-card {
+        transition: all 0.3s ease;
+    }
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .team-card {
+        transition: all 0.3s ease;
+    }
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    .grayscale-hover {
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+    .grayscale-hover:hover {
+        filter: grayscale(0);
+        opacity: 1;
+    }
+</style>
+{% endblock main-content %}

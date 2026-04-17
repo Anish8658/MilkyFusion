@@ -1,0 +1,169 @@
+<!-- ec\app\templates\app\login.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Login - Manguli Dairy{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Card with split layout -->
+            <div class="card border-0 shadow-lg overflow-hidden">
+                <div class="row g-0">
+                    <!-- Left side - Branding/Image -->
+                    <div class="col-md-5 bg-primary d-none d-md-flex align-items-center justify-content-center p-4" 
+                         style="background: linear-gradient(135deg, var(--primary-color) 0%, #1e3c2a 100%);">
+                        <div class="text-center text-white">
+                            <img src="{% static 'app/images/logo.png' %}" alt="Milky Fusion" class="img-fluid mb-4" style="max-width: 150px;">
+                            <h4 class="fw-bold mb-3">Welcome Back!</h4>
+                            <p class="mb-4">Your trusted source for fresh dairy products</p>
+                            <i class="fas fa-milk fa-4x opacity-50"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Right side - Login Form -->
+                    <div class="col-md-7 p-4 p-lg-5">
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold">Login to Your Account</h3>
+                            <p class="text-muted">Please enter your credentials to continue</p>
+                        </div>
+                        
+                        <form action="" method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{error}}
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-user me-2 text-primary"></i>Username
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.username.errors %}
+                                        {{error}}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Password Field with Toggle -->
+                            <div class="mb-4">
+                                <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fas fa-lock me-2 text-primary"></i>Password
+                                </label>
+                                <div class="input-group password-toggle-group">
+                                    {{ form.password }}
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.password.errors %}
+                                        {{error}}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Remember Me & Forgot Password -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="{% url 'password_reset' %}" class="text-decoration-none text-primary">
+                                    Forgot Password?
+                                </a>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </button>
+                            </div>
+                            
+                            <!-- Register Link -->
+                            <div class="text-center">
+                                <p class="mb-0">Don't have an account? 
+                                    <a href="{% url 'registration' %}" class="text-primary fw-bold text-decoration-none">
+                                        Register here <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toggle-password {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border: 2px solid var(--border-color);
+        border-left: none;
+    }
+    
+    .toggle-password:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    
+    .opacity-50 {
+        opacity: 0.5;
+    }
+</style>
+
+<script>
+// Wait for jQuery to load
+function initLoginPage() {
+    if (typeof jQuery === 'undefined') {
+        setTimeout(initLoginPage, 50);
+        return;
+    }
+    
+    $(document).ready(function() {
+        console.log('Login page initialized');
+        
+        // Toggle password visibility
+        $('.toggle-password').click(function() {
+            var passwordInput = $(this).closest('.password-toggle-group').find('input');
+            var icon = $(this).find('i');
+            
+            if (passwordInput.length) {
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            }
+        });
+    });
+}
+
+// Start initialization
+initLoginPage();
+</script>
+{% endblock main-content %}

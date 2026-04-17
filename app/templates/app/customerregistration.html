@@ -1,0 +1,173 @@
+<!-- ec\app\templates\app\customerregistration.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Create Account - Manguli Dairy{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Main Registration Card -->
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-white py-3">
+                    <h4 class="fw-bold mb-0">
+                        <i class="fas fa-user-plus text-primary me-2"></i>
+                        Create Your Account
+                    </h4>
+                </div>
+                
+                <div class="card-body p-4 p-lg-5">
+                    {% if messages %}
+                    {% for msg in messages %}
+                    <div class="alert alert-{{msg.tags}} alert-dismissible fade show" role="alert">
+                        {{msg}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" novalidate id="registrationForm">
+                        {% csrf_token %}
+                        
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-user text-primary me-2"></i>Username
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-envelope text-primary me-2"></i>Email
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Password with Toggle -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-lock text-primary me-2"></i>Password
+                            </label>
+                            <div class="input-group password-toggle-group">
+                                {{ form.password1 }}
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password1">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Confirm Password with Toggle -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-lock text-primary me-2"></i>Confirm Password
+                            </label>
+                            <div class="input-group password-toggle-group">
+                                {{ form.password2 }}
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password2">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toggle-password {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border: 2px solid var(--border-color);
+        border-left: none;
+    }
+    
+    .toggle-password:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+</style>
+
+<script>
+// Wait for jQuery to load
+function initRegistrationPage() {
+    if (typeof jQuery === 'undefined') {
+        setTimeout(initRegistrationPage, 50);
+        return;
+    }
+    
+    $(document).ready(function() {
+        console.log('Registration page initialized');
+        
+        // Toggle password visibility
+        $('.toggle-password').click(function() {
+            var button = $(this);
+            var passwordInput = button.closest('.password-toggle-group').find('input');
+            var icon = button.find('i');
+            
+            if (passwordInput.length) {
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            }
+        });
+        
+        // Form validation
+        $('#registrationForm').on('submit', function(e) {
+            var password = $('#id_password1').val();
+            var confirm = $('#id_password2').val();
+            
+            if (password !== confirm) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return false;
+            }
+            
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long!');
+                return false;
+            }
+        });
+    });
+}
+
+// Start initialization
+initRegistrationPage();
+</script>
+{% endblock main-content %}

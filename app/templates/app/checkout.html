@@ -1,0 +1,509 @@
+<!-- ec\app\templates\app\checkout.html -->
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Checkout -  Milky Fusion{% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'showcart' %}" class="text-decoration-none">Cart</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+        </ol>
+    </nav>
+
+    <!-- Checkout Steps -->
+    <div class="checkout-steps mb-5">
+        <div class="row">
+            <div class="col-4">
+                <div class="step-item active">
+                    <div class="step-icon">1</div>
+                    <div class="step-label">Cart</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="step-item active">
+                    <div class="step-icon">2</div>
+                    <div class="step-label">Checkout</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="step-item">
+                    <div class="step-icon">3</div>
+                    <div class="step-label">Payment</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column - Shipping & Order Summary -->
+        <div class="col-lg-8">
+            <!-- Messages -->
+            {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{msg.tags}} alert-dismissible fade show" role="alert">
+                {{msg}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <!-- Shipping Address Selection -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                        Select Shipping Address
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="checkoutForm" method="post">
+                        {% csrf_token %}
+                        
+                        {% if add %}
+                        <div class="row g-3">
+                            {% for ad in add %}
+                            <div class="col-md-6">
+                                <div class="address-card {% if forloop.first %}selected{% endif %}" 
+                                     onclick="selectAddress('{{ad.id}}', this)">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="custid" 
+                                               id="custadd{{forloop.counter}}" value="{{ad.id}}"
+                                               {% if forloop.first %}checked{% endif %}>
+                                        <label class="form-check-label fw-bold" for="custadd{{forloop.counter}}">
+                                            Address {{forloop.counter}}
+                                        </label>
+                                    </div>
+                                    <div class="address-details mt-2">
+                                        <p class="mb-1"><strong>{{ad.name}}</strong></p>
+                                        <p class="mb-1 text-muted">{{ad.locality}}, {{ad.city}}</p>
+                                        <p class="mb-1 text-muted">{{ad.state}}</p>
+                                        <p class="mb-0"><i class="fas fa-phone-alt me-1"></i> {{ad.mobile}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Add New Address Button -->
+                        <div class="mt-3">
+                            <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-plus me-2"></i>Add New Address
+                            </a>
+                        </div>
+                        {% else %}
+                        <!-- No Address Found -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-map-marked-alt fa-4x text-muted"></i>
+                            </div>
+                            <h5 class="fw-bold mb-3">No Address Found</h5>
+                            <p class="text-muted mb-4">You need to add a delivery address to continue with checkout.</p>
+                            <a href="{% url 'profile' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add New Address
+                            </a>
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-box text-primary me-2"></i>
+                        Order Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                        <div class="order-item d-flex align-items-center mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                            <div class="order-item-image me-3">
+                                <img src="{{item.product.product_image.url}}" alt="{{item.product.title}}">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1">{{item.product.title|truncatechars:40}}</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Qty: {{item.quantity}}</small>
+                                    <span class="fw-bold text-success">₹{{item.total_cost|floatformat:2}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <hr>
+                        
+                        <!-- Price Breakdown -->
+                        <div class="price-breakdown">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal</span>
+                                <span class="fw-bold">₹{{famount|floatformat:2}}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Delivery Charges</span>
+                                <span class="text-success fw-bold">FREE</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">GST (5%)</span>
+                                <span class="fw-bold">₹{{famount|add:"0.05"|floatformat:2}}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="h6 fw-bold">Total Amount</span>
+                                <span class="h5 fw-bold text-primary">₹{{totalamount|floatformat:2}}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Your cart is empty</p>
+                            <a href="{% url 'category' 'ML' %}" class="btn btn-primary btn-sm">
+                                Start Shopping
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Payment -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-credit-card text-primary me-2"></i>
+                        Payment Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if add and cart_items %}
+                        <!-- Total Amount Display -->
+                        <div class="total-amount-display text-center mb-4 p-3 bg-light rounded-3">
+                            <small class="text-muted d-block">Total Payable Amount</small>
+                            <h2 class="fw-bold text-primary mb-0">₹{{totalamount|floatformat:2}}</h2>
+                        </div>
+                        
+                        <!-- Payment Methods -->
+                        <div class="payment-methods mb-4">
+                            <h6 class="fw-bold mb-3">Select Payment Method</h6>
+                            
+                            <div class="payment-option mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" 
+                                           id="razorpay" value="razorpay" checked>
+                                    <label class="form-check-label d-flex align-items-center" for="razorpay">
+                                        <img src="{% static 'app/images/razorpay-icon.png' %}" height="30" class="me-2" alt="Razorpay">
+                                        <span>Razorpay</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-option mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" 
+                                           id="cod" value="cod">
+                                    <label class="form-check-label" for="cod">
+                                        <i class="fas fa-money-bill-wave me-2 text-success"></i>
+                                        Cash on Delivery (COD)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Place Order Button -->
+                        <button class="btn btn-warning btn-lg fw-bold w-100 mb-3" id="rzp-button1" type="submit" form="checkoutForm" {% if not add %}disabled{% endif %}>
+                            <i class="fas fa-lock me-2"></i>Place Order
+                        </button>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-exclamation-circle fa-3x text-warning mb-3"></i>
+                            <p class="text-muted">Please add address and items to continue</p>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Secure Payment Note -->
+                    <div class="secure-payment mt-4 p-3 bg-light rounded-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt text-success fs-3 me-3"></i>
+                            <div>
+                                <small class="fw-bold d-block">100% Secure Payment</small>
+                                <small class="text-muted">Your payment details are encrypted</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Checkout Steps */
+    .checkout-steps .step-item {
+        text-align: center;
+        position: relative;
+    }
+    
+    .checkout-steps .step-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 25px;
+        right: -50%;
+        width: 100%;
+        height: 2px;
+        background: #dee2e6;
+        z-index: 1;
+    }
+    
+    .checkout-steps .step-item.active:not(:last-child)::after {
+        background: var(--primary-color);
+    }
+    
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .step-item.active .step-icon {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .step-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .step-item.active .step-label {
+        color: var(--primary-color);
+    }
+    
+    /* Address Cards */
+    .address-card {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .address-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .address-card.selected {
+        border-color: var(--primary-color);
+        background-color: #f0f9ff;
+    }
+    
+    .address-card .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    /* Order Item Image */
+    .order-item-image {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+    
+    .order-item-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    /* Payment Options */
+    .payment-option {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .payment-option:hover {
+        border-color: var(--primary-color);
+        background-color: #f8f9fa;
+    }
+    
+    .payment-option .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    /* Sticky Card */
+    .sticky-top {
+        z-index: 1;
+    }
+    
+    /* Button disabled state */
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    @media (max-width: 768px) {
+        .checkout-steps .step-item:not(:last-child)::after {
+            width: 50%;
+            right: -25%;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<script>
+function selectAddress(addressId, element) {
+    // Remove selected class from all address cards
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked card
+    element.classList.add('selected');
+    
+    // Check the radio button
+    var radio = document.querySelector('input[name="custid"][value="' + addressId + '"]');
+    if (radio) {
+        radio.checked = true;
+    }
+}
+
+// Debug: Check if addresses exist
+document.addEventListener('DOMContentLoaded', function() {
+    var addressCards = document.querySelectorAll('.address-card');
+    console.log('Number of addresses found:', addressCards.length);
+    
+    if (addressCards.length === 0) {
+        console.log('No addresses available');
+    }
+});
+</script>
+{% endblock main-content %}
+
+{% block payment-gateway %}
+{% if add and cart_items %}
+<script>
+// Wait for jQuery
+function initPayment() {
+    if (typeof jQuery === 'undefined') {
+        setTimeout(initPayment, 50);
+        return;
+    }
+    
+    $(document).ready(function() {
+        var options = {
+            "key": "rzp_test_S9azRrAt2O1cyU",
+            "amount": "{{ razoramount }}",
+            "currency": "INR",
+            "name": "Milky Fusion",
+            "description": "Purchase Products",
+            "image": "{% static 'app/images/logo.png' %}",
+            "order_id": "{{ order_id }}",
+            "handler": function (response){
+                var selectedAddress = document.querySelector('input[name="custid"]:checked');
+                
+                if (!selectedAddress) {
+                    alert('Please select a shipping address');
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'verify_payment' %}",
+                    data: {
+                        'razorpay_order_id': response.razorpay_order_id,
+                        'razorpay_payment_id': response.razorpay_payment_id,
+                        'razorpay_signature': response.razorpay_signature,
+                        'cust_id': selectedAddress.value,
+                        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').first().val()
+                    },
+                    success: function(data) {
+                        if (data.success && data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            alert(data.error || 'Payment verified, but redirect failed.');
+                        }
+                    },
+                    error: function(xhr) {
+                        var message = 'Payment verification failed. Please contact support if amount was deducted.';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            message = xhr.responseJSON.error;
+                        }
+                        alert(message);
+                    }
+                });
+            },
+            "modal": {
+                "ondismiss": function() {
+                    console.log('Payment modal closed');
+                }
+            },
+            "prefill": {
+                "name": "{{ request.user.get_full_name|default:request.user.username|escapejs }}",
+                "email": "{{ request.user.email|default:''|escapejs }}"
+            },
+            "theme": {
+                "color": "#2B5A3A"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+
+        rzp1.on('payment.failed', function (response){
+            alert('Payment failed: ' + response.error.description);
+        });
+
+        $('#rzp-button1').on('click', function(e){
+            e.preventDefault();
+            
+            // Check if address is selected
+            var selectedAddress = document.querySelector('input[name="custid"]:checked');
+            if (!selectedAddress) {
+                alert('Please select a shipping address');
+                return false;
+            }
+            
+            // Check payment method
+            var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            if (paymentMethod && paymentMethod.value === 'cod') {
+                // Handle COD
+                document.getElementById('checkoutForm').submit();
+            } else {
+                // Handle Razorpay
+                rzp1.open();
+            }
+        });
+    });
+}
+
+initPayment();
+</script>
+{% endif %}
+{% endblock payment-gateway %}
